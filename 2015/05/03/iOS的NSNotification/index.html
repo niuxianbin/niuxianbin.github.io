@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="##iOS的NSNotificationCenter页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。 通知是同步？异步？同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queu">
+<meta name="description" content="iOS的NSNotificationCenter页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。 通知是同步？异步？同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queues">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS的NSNotification">
 <meta property="og:url" content="http://yoursite.com/2015/05/03/iOS的NSNotification/index.html">
 <meta property="og:site_name" content="niuxianbin的技术博客">
-<meta property="og:description" content="##iOS的NSNotificationCenter页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。 通知是同步？异步？同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queu">
+<meta property="og:description" content="iOS的NSNotificationCenter页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。 通知是同步？异步？同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queues">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-09T07:32:55.973Z">
+<meta property="og:updated_time" content="2017-12-09T07:38:55.089Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS的NSNotification">
-<meta name="twitter:description" content="##iOS的NSNotificationCenter页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。 通知是同步？异步？同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queu">
+<meta name="twitter:description" content="iOS的NSNotificationCenter页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。 通知是同步？异步？同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queues">
 
 
 
@@ -299,11 +299,17 @@
       
 
       
-        <p>##iOS的NSNotificationCenter<br>页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。</p>
-<h2 id="通知是同步？异步？"><a href="#通知是同步？异步？" class="headerlink" title="通知是同步？异步？"></a>通知是同步？异步？</h2><p>同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queues）<br>`</p>
-<ul>
-<li>(void)viewDidLoad {<br>  [super viewDidLoad];<br>  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notification) name:@”name” object:nil];<br>  NSLog(@”start”);<br>  [[NSNotificationCenter defaultCenter] postNotificationName:@”name” object:nil];<br>  NSLog(@”post”);<br>}<br>-(void)notification{<br>  NSLog(@”notification”);<br>}<br>`</li>
-</ul>
+        <h2 id="iOS的NSNotificationCenter"><a href="#iOS的NSNotificationCenter" class="headerlink" title="iOS的NSNotificationCenter"></a>iOS的NSNotificationCenter</h2><p>页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。</p>
+<h2 id="通知是同步？异步？"><a href="#通知是同步？异步？" class="headerlink" title="通知是同步？异步？"></a>通知是同步？异步？</h2><p>同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queues）<br><code>- (void)viewDidLoad {
+    [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notification) name:@&quot;name&quot; object:nil];
+    NSLog(@&quot;start&quot;);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@&quot;name&quot; object:nil];
+    NSLog(@&quot;post&quot;);
+}
+-(void)notification{
+    NSLog(@&quot;notification&quot;);
+}</code></p>
 
       
     </div>
@@ -454,7 +460,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#通知是同步？异步？"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x901A;&#x77E5;&#x662F;&#x540C;&#x6B65;&#xFF1F;&#x5F02;&#x6B65;&#xFF1F;" class="headerlink" title="&#x901A;&#x77E5;&#x662F;&#x540C;&#x6B65;&#xFF1F;&#x5F02;&#x6B65;&#xFF1F;"></a>&#x901A;&#x77E5;&#x662F;&#x540C;&#x6B65;&#xFF1F;&#x5F02;&#x6B65;&#xFF1F;</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#iOS的NSNotificationCenter"><span class="nav-number">1.</span> <span class="nav-text"><a href="#iOS&#x7684;NSNotificationCenter" class="headerlink" title="iOS&#x7684;NSNotificationCenter"></a>iOS&#x7684;NSNotificationCenter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通知是同步？异步？"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x901A;&#x77E5;&#x662F;&#x540C;&#x6B65;&#xFF1F;&#x5F02;&#x6B65;&#xFF1F;" class="headerlink" title="&#x901A;&#x77E5;&#x662F;&#x540C;&#x6B65;&#xFF1F;&#x5F02;&#x6B65;&#xFF1F;"></a>&#x901A;&#x77E5;&#x662F;&#x540C;&#x6B65;&#xFF1F;&#x5F02;&#x6B65;&#xFF1F;</span></a></li></ol></div>
             
 
           </div>

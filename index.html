@@ -232,139 +232,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/09/iOS的NSNotification/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="niuxianbin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/upload/15234019.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="niuxianbin的技术博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/12/09/iOS的NSNotification/" itemprop="url">未命名</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-09T15:04:41+08:00">
-                2017-12-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<p>title: iOS的NSNotification<br>date: 2015-05-03 10:04:41</p>
-<hr>
-<p>##iOS的NSNotificationCenter<br>页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。</p>
-<h2 id="通知是同步？异步？"><a href="#通知是同步？异步？" class="headerlink" title="通知是同步？异步？"></a>通知是同步？异步？</h2><p>同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queues）<br><code>- (void)viewDidLoad {
-    [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notification) name:@&quot;name&quot; object:nil];
-    NSLog(@&quot;start&quot;);
-    [[NSNotificationCenter defaultCenter] postNotificationName:@&quot;name&quot; object:nil];
-    NSLog(@&quot;post&quot;);
-}
--(void)notification{
-    NSLog(@&quot;notification&quot;);
-}</code></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/01/迁移/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -437,6 +304,136 @@
         
           
             <p>   博客分享中断好久，今天从CSDN迁移到GitHub上，markDown确实能提高效率，以后都在这了～。<br>   学海无涯，孜孜不倦，加油～</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/03/iOS的NSNotification/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="niuxianbin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/upload/15234019.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="niuxianbin的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/03/iOS的NSNotification/" itemprop="url">iOS的NSNotification</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-03T10:04:41+08:00">
+                2015-05-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="iOS的NSNotificationCenter"><a href="#iOS的NSNotificationCenter" class="headerlink" title="iOS的NSNotificationCenter"></a>iOS的NSNotificationCenter</h2><p>页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。</p>
+<h2 id="通知是同步？异步？"><a href="#通知是同步？异步？" class="headerlink" title="通知是同步？异步？"></a>通知是同步？异步？</h2><p>同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queues）<br><code>- (void)viewDidLoad {
+    [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notification) name:@&quot;name&quot; object:nil];
+    NSLog(@&quot;start&quot;);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@&quot;name&quot; object:nil];
+    NSLog(@&quot;post&quot;);
+}
+-(void)notification{
+    NSLog(@&quot;notification&quot;);
+}</code></p>
 
           
         
