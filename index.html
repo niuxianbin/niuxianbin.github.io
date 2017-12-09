@@ -424,16 +424,7 @@
         
           
             <h2 id="iOS的NSNotificationCenter"><a href="#iOS的NSNotificationCenter" class="headerlink" title="iOS的NSNotificationCenter"></a>iOS的NSNotificationCenter</h2><p>页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。</p>
-<h2 id="通知是同步？异步？"><a href="#通知是同步？异步？" class="headerlink" title="通知是同步？异步？"></a>通知是同步？异步？</h2><p>同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queues）<br><code>- (void)viewDidLoad {
-    [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notification) name:@&quot;name&quot; object:nil];
-    NSLog(@&quot;start&quot;);
-    [[NSNotificationCenter defaultCenter] postNotificationName:@&quot;name&quot; object:nil];
-    NSLog(@&quot;post&quot;);
-}
--(void)notification{
-    NSLog(@&quot;notification&quot;);
-}</code></p>
+<h2 id="通知是同步？异步？"><a href="#通知是同步？异步？" class="headerlink" title="通知是同步？异步？"></a>通知是同步？异步？</h2><p>同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queues）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notification) name:@&quot;name&quot; object:nil];</span><br><span class="line">    NSLog(@&quot;start&quot;);</span><br><span class="line">    [[NSNotificationCenter defaultCenter] postNotificationName:@&quot;name&quot; object:nil];</span><br><span class="line">    NSLog(@&quot;post&quot;);</span><br><span class="line">&#125;</span><br><span class="line">-(void)notification&#123;</span><br><span class="line">    NSLog(@&quot;notification&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
           
         
