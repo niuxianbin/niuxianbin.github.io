@@ -434,8 +434,9 @@
 <h2 id="通知的移除"><a href="#通知的移除" class="headerlink" title="通知的移除"></a>通知的移除</h2><p>在iOS8之前，我们必须手动移出，不然在监听对象释放后，会产生野指针导致crash，但是iOS9以后不手动移出也没问题了，原因是iOS通知中心对observer引用的修饰词变化了</p>
 <ul>
 <li>iOS 8及其之前用unsafe_unretained</li>
-<li>iOS 9以后用了weak<br>所以即使手动不移除，也不会有问题。</li>
+<li>iOS 9以后用了weak</li>
 </ul>
+<p>所以即使手动不移除，也不会有问题。</p>
 
           
         

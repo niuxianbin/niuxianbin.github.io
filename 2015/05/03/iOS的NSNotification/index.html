@@ -87,7 +87,7 @@
 <meta property="og:description" content="iOS的NSNotificationCenter页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。 通知是同步？异步？同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：通过通知队列（Notification">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/1.png">
-<meta property="og:updated_time" content="2017-12-09T08:36:30.329Z">
+<meta property="og:updated_time" content="2017-12-09T08:37:59.511Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS的NSNotification">
 <meta name="twitter:description" content="iOS的NSNotificationCenter页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。 通知是同步？异步？同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：通过通知队列（Notification">
@@ -312,8 +312,9 @@
 <h2 id="通知的移除"><a href="#通知的移除" class="headerlink" title="通知的移除"></a>通知的移除</h2><p>在iOS8之前，我们必须手动移出，不然在监听对象释放后，会产生野指针导致crash，但是iOS9以后不手动移出也没问题了，原因是iOS通知中心对observer引用的修饰词变化了</p>
 <ul>
 <li>iOS 8及其之前用unsafe_unretained</li>
-<li>iOS 9以后用了weak<br>所以即使手动不移除，也不会有问题。</li>
+<li>iOS 9以后用了weak</li>
 </ul>
+<p>所以即使手动不移除，也不会有问题。</p>
 
       
     </div>
