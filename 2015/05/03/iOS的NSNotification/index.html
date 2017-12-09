@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="博客分享中断好久，今天从CSDN迁移到GitHub上，markDown确实能提高效率，以后都在这了～。   学海无涯，孜孜不倦，加油～">
+<meta name="description" content="##iOS的NSNotificationCenter页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。 通知是同步？异步？同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queu">
 <meta property="og:type" content="article">
-<meta property="og:title" content="迁移">
-<meta property="og:url" content="http://yoursite.com/2016/05/01/迁移/index.html">
+<meta property="og:title" content="iOS的NSNotification">
+<meta property="og:url" content="http://yoursite.com/2015/05/03/iOS的NSNotification/index.html">
 <meta property="og:site_name" content="niuxianbin的技术博客">
-<meta property="og:description" content="博客分享中断好久，今天从CSDN迁移到GitHub上，markDown确实能提高效率，以后都在这了～。   学海无涯，孜孜不倦，加油～">
+<meta property="og:description" content="##iOS的NSNotificationCenter页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。 通知是同步？异步？同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queu">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-09T07:00:28.292Z">
+<meta property="og:updated_time" content="2017-12-09T07:32:55.973Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="迁移">
-<meta name="twitter:description" content="博客分享中断好久，今天从CSDN迁移到GitHub上，markDown确实能提高效率，以后都在这了～。   学海无涯，孜孜不倦，加油～">
+<meta name="twitter:title" content="iOS的NSNotification">
+<meta name="twitter:description" content="##iOS的NSNotificationCenter页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。 通知是同步？异步？同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queu">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/05/01/迁移/"/>
+  <link rel="canonical" href="http://yoursite.com/2015/05/03/iOS的NSNotification/"/>
 
 
 
 
 
-  <title>迁移 | niuxianbin的技术博客</title>
+  <title>iOS的NSNotification | niuxianbin的技术博客</title>
   
 
 
@@ -232,7 +232,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/01/迁移/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/03/iOS的NSNotification/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="niuxianbin">
@@ -249,7 +249,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">迁移</h1>
+          <h1 class="post-title" itemprop="name headline">iOS的NSNotification</h1>
         
 
         <div class="post-meta">
@@ -261,8 +261,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-01T14:53:23+08:00">
-                2016-05-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-03T10:04:41+08:00">
+                2015-05-03
               </time>
             
 
@@ -299,7 +299,11 @@
       
 
       
-        <p>   博客分享中断好久，今天从CSDN迁移到GitHub上，markDown确实能提高效率，以后都在这了～。<br>   学海无涯，孜孜不倦，加油～</p>
+        <p>##iOS的NSNotificationCenter<br>页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。</p>
+<h2 id="通知是同步？异步？"><a href="#通知是同步？异步？" class="headerlink" title="通知是同步？异步？"></a>通知是同步？异步？</h2><p>同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：（Notification Queues）<br>`</p>
+<ul>
+<li>(void)viewDidLoad {<br>  [super viewDidLoad];<br>  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notification) name:@”name” object:nil];<br>  NSLog(@”start”);<br>  [[NSNotificationCenter defaultCenter] postNotificationName:@”name” object:nil];<br>  NSLog(@”post”);<br>}<br>-(void)notification{<br>  NSLog(@”notification”);<br>}<br>`</li>
+</ul>
 
       
     </div>
@@ -324,15 +328,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/05/03/iOS的NSNotification/" rel="next" title="iOS的NSNotification">
-                <i class="fa fa-chevron-left"></i> iOS的NSNotification
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/01/迁移/" rel="prev" title="迁移">
+                迁移 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -382,8 +386,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -431,6 +444,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#通知是同步？异步？"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x901A;&#x77E5;&#x662F;&#x540C;&#x6B65;&#xFF1F;&#x5F02;&#x6B65;&#xFF1F;" class="headerlink" title="&#x901A;&#x77E5;&#x662F;&#x540C;&#x6B65;&#xFF1F;&#x5F02;&#x6B65;&#xFF1F;"></a>&#x901A;&#x77E5;&#x662F;&#x540C;&#x6B65;&#xFF1F;&#x5F02;&#x6B65;&#xFF1F;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
