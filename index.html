@@ -251,7 +251,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/05/13/开发中宏的使用/" itemprop="url">开发中宏的使用</a></h1>
+                <a class="post-title-link" href="/2016/05/13/开发中宏的使用/" itemprop="url">优雅高效开发的宏</a></h1>
         
 
         <div class="post-meta">
@@ -304,6 +304,7 @@
         
           
             <h2 id="宏在开发中的使用"><a href="#宏在开发中的使用" class="headerlink" title="宏在开发中的使用"></a>宏在开发中的使用</h2><p>开发中我们一些有关布局的尺寸，我们通常会用宏定义，最基本的使用如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define SCREEN_WIDTH   [UIScreen mainScreen].bounds.size.width</span><br><span class="line">#define SCREENH_HEIGHT [UIScreen mainScreen].bounds.size.height</span><br></pre></td></tr></table></figure></p>
+<p>在研究MJExtension，SDSDWebImage源码发现宏更有效率的使用方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> SDSDWebImage中关于需要在主线程执行的block；</span><br><span class="line">**/</span><br><span class="line"></span><br><span class="line">#define dispatch_main_async_safe(block)\</span><br><span class="line">if ([NSThread isMainThread]) &#123;\</span><br><span class="line">	block();\</span><br><span class="line">&#125; else &#123;\</span><br><span class="line">	dispatch_async(dispatch_get_main_queue(), block);\</span><br><span class="line">\&#125;</span><br><span class="line">/**</span><br><span class="line"> MJ归档的实现</span><br><span class="line">**/</span><br><span class="line">#define MJCodingImplementation \</span><br><span class="line">- (id)initWithCoder:(NSCoder *)decoder \</span><br><span class="line">&#123; \</span><br><span class="line">if (self = [super init]) &#123; \</span><br><span class="line">[self mj_decode:decoder]; \</span><br><span class="line">&#125; \</span><br><span class="line">return self; \</span><br><span class="line">&#125; \</span><br><span class="line">\</span><br><span class="line">- (void)encodeWithCoder:(NSCoder *)encoder \</span><br><span class="line">&#123; \</span><br><span class="line">[self mj_encode:encoder]; \</span><br><span class="line">&#125;</span><br><span class="line">#define MJExtensionCodingImplementation MJCodingImplementation</span><br></pre></td></tr></table></figure></p>
 
           
         
