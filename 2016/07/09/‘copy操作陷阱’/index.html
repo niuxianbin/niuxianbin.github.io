@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="copy陷阱和同事交流问题，发现简单的也可能理解错，如下这段代码就是例子，1234567891011121314NSDictionary &amp;lt;NSString *, Model *&amp;gt; *dicTemp = @&amp;#123;@&amp;quot;model&amp;quot;:[[Model alloc] initWithName:@&amp;quot;niuxianbin&amp;quot;]&amp;#125;;    NSD">
+<meta property="og:type" content="article">
+<meta property="og:title" content="copy操作陷阱">
+<meta property="og:url" content="http://yoursite.com/2016/07/09/‘copy操作陷阱’/index.html">
+<meta property="og:site_name" content="niuxianbin的技术博客">
+<meta property="og:description" content="copy陷阱和同事交流问题，发现简单的也可能理解错，如下这段代码就是例子，1234567891011121314NSDictionary &amp;lt;NSString *, Model *&amp;gt; *dicTemp = @&amp;#123;@&amp;quot;model&amp;quot;:[[Model alloc] initWithName:@&amp;quot;niuxianbin&amp;quot;]&amp;#125;;    NSD">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/img/123.png">
+<meta property="og:image" content="http://yoursite.com/img/3.png">
+<meta property="og:image" content="http://yoursite.com/img/4.png">
+<meta property="og:updated_time" content="2017-12-25T13:51:14.344Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="copy操作陷阱">
+<meta name="twitter:description" content="copy陷阱和同事交流问题，发现简单的也可能理解错，如下这段代码就是例子，1234567891011121314NSDictionary &amp;lt;NSString *, Model *&amp;gt; *dicTemp = @&amp;#123;@&amp;quot;model&amp;quot;:[[Model alloc] initWithName:@&amp;quot;niuxianbin&amp;quot;]&amp;#125;;    NSD">
+<meta name="twitter:image" content="http://yoursite.com/img/123.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/07/09/‘copy操作陷阱’/"/>
+
+
+
+
+
+  <title>copy操作陷阱 | niuxianbin的技术博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">niuxianbin的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学海无涯</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/09/‘copy操作陷阱’/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="niuxianbin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/upload/15234019.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="niuxianbin的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">copy操作陷阱</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-09T20:32:49+08:00">
+                2016-07-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="copy陷阱"><a href="#copy陷阱" class="headerlink" title="copy陷阱"></a>copy陷阱</h2><p>和同事交流问题，发现简单的也可能理解错，如下这段代码就是例子，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">NSDictionary &lt;NSString *, Model *&gt; *dicTemp = @&#123;@&quot;model&quot;:[[Model alloc] initWithName:@&quot;niuxianbin&quot;]&#125;;</span><br><span class="line">    NSDictionary &lt;NSString *, Model *&gt; *dicCopy = dic.copy;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    [dic objectForKey:@&quot;model&quot;].name = @&quot;123&quot;;</span><br><span class="line">    </span><br><span class="line">   </span><br><span class="line">    BOOL isNameChanged = [[dic objectForKey:@&quot;model&quot;].name isEqualToString:[dicBackup objectForKey:@&quot;model&quot;].name];</span><br><span class="line">    </span><br><span class="line">    if (isNameChanged) &#123;</span><br><span class="line">        NSLog(@&quot;changed&quot;);</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        NSLog(@&quot;unchaned&quot;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>刚开始我觉得changed，后来细想错了，你知道错哪了吗？<br>敲黑板：深copy和浅copy理解不到位，</p>
+<h2 id="官方文档解释"><a href="#官方文档解释" class="headerlink" title="官方文档解释"></a>官方文档解释</h2><p> Shallow copies and deep copies图示：<br><img src="/img/123.png" alt=""></p>
+<p>####copy对于非容器类对象<br>这里指的是NSString,NSNumber等等一类的对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NSString *string = @&quot;origionStr&quot;;</span><br><span class="line">    　　NSString *stringCopy = [string copy];</span><br><span class="line">    　　NSMutableString *stringMCopy = [string mutableCopy];</span><br><span class="line">    　　[stringMCopy appendString:@&quot;123&quot;];</span><br></pre></td></tr></table></figure></p>
+<p><img src="/img/3.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NSMutableString *string = @&quot;origionStr&quot;.mutableCopy;</span><br><span class="line">    　　NSString *stringCopy = [string copy];</span><br><span class="line">    　　NSMutableString *stringMCopy = [string mutableCopy];</span><br><span class="line">    　　[stringMCopy appendString:@&quot;123&quot;];</span><br></pre></td></tr></table></figure></p>
+<p><img src="/img/4.png" alt=""><br>对于结果分析可知：<br>copy对于基本对象有两条总结：</p>
+<ul>
+<li>对于不可变对象，copy（浅copy）是指针复制，mutableCopy（深拷贝）是对象复制。</li>
+<li>对于可变对象，copy（浅copy）是对象复制，但是返回的是不可变对象（这也是为什么copy修饰词修饰可变数组可能会造成crash的根本原因），mutableCopy（深拷贝）是对象复制。<br>####copy对于容器类对象<br>关于容器对象的浅copy。Apple有如下解释<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">There are a number of ways to make a shallow copy of a collection. When you create a shallow copy, the objects in the original collection are sent a retain message and the pointers are copied to the new collection. Listing 1 shows some of the ways to create a new collection using a shallow copy.</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>意思就是容器对象的引用计数+1，同时复制了指针。<br>栗子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NSArray *shallowCopyArray = [someArray copyWithZone:nil];</span><br><span class="line"> </span><br><span class="line">NSDictionary *shallowCopyDict = [[NSDictionary alloc] initWithDictionary:someDictionary copyItems:NO];</span><br></pre></td></tr></table></figure></p>
+<p>关于容器对象的深copy，把第二个参数设置为YES就OK了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NSArray *deepCopyArray=[[NSArray alloc] initWithArray:someArray copyItems:YES];</span><br><span class="line">//官方还有第二中方案</span><br><span class="line">NSArray* trueDeepCopyArray = [NSKeyedUnarchiver unarchiveObjectWithData:</span><br><span class="line">          [NSKeyedArchiver archivedDataWithRootObject:oldArray]];</span><br></pre></td></tr></table></figure></p>
+<p>此处集合的对象都会收到copyWithZone：的消息，如果集合里的对象遵循 NSCopying 协议，那么对象就会被深复制到新的集合。如果对象没有遵循 NSCopying 协议，而尝试用这种方法进行深复制，会在运行时出错。这种拷贝方式只能够提供一层内存拷贝(one-level-deep copy)，而非真正的深复制。</p>
+<h4 id="copy单层深复制-one-level-deep-copy"><a href="#copy单层深复制-one-level-deep-copy" class="headerlink" title="copy单层深复制 (one-level-deep copy)"></a>copy单层深复制 (one-level-deep copy)</h4><p>如果在多层数组中，对第一层进行内容拷贝，其它层进行指针拷贝，这种情况是属于深复制，还是浅复制？官方文档有一段话：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">This kind of copy is only capable of producing a one-level-deep copy. If you only need a one-level-deep copy...</span><br><span class="line"></span><br><span class="line">If you need a true deep copy, such as when you have an array of arrays...</span><br></pre></td></tr></table></figure></p>
+<p>苹果认为这种复制不是真正的深复制，而是将其称为单层深复制(one-level-deep copy)<br>总结如下：</p>
+<ul>
+<li>不可变容器的copy是指针复制，mutableCopy是对象复制（此处仅是对象copy，内部元素是指针copy）</li>
+<li>可变容器的copy是对象复制（返回不可变对象），mutableCopy是对象复制。<br>参考：<br>1 <a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Collections/Articles/Copying.html/" target="_blank" rel="noopener">https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Collections/Articles/Copying.html</a><br>2  <a href="http://blog.csdn.net/fanjunxi1990/article/details/16846393" target="_blank" rel="noopener">iOS Copy 和 MutableCopy的区别 深浅拷贝的区别</a> </li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/01/weakSelf和stronSelf的小秘密/" rel="next" title="weakSelf和stronSelf的小秘密">
+                <i class="fa fa-chevron-left"></i> weakSelf和stronSelf的小秘密
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/20/GCD延迟操作/" rel="prev" title="GCD延迟操作">
+                GCD延迟操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/upload/15234019.jpeg"
+                alt="niuxianbin" />
+            
+              <p class="site-author-name" itemprop="name">niuxianbin</p>
+              <p class="site-description motion-element" itemprop="description">孜孜不倦</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#copy陷阱"><span class="nav-number">1.</span> <span class="nav-text"><a href="#copy&#x9677;&#x9631;" class="headerlink" title="copy&#x9677;&#x9631;"></a>copy&#x9677;&#x9631;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#官方文档解释"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x5B98;&#x65B9;&#x6587;&#x6863;&#x89E3;&#x91CA;" class="headerlink" title="&#x5B98;&#x65B9;&#x6587;&#x6863;&#x89E3;&#x91CA;"></a>&#x5B98;&#x65B9;&#x6587;&#x6863;&#x89E3;&#x91CA;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#copy单层深复制-one-level-deep-copy"><span class="nav-number">2.0.1.</span> <span class="nav-text"><a href="#copy&#x5355;&#x5C42;&#x6DF1;&#x590D;&#x5236;-one-level-deep-copy" class="headerlink" title="copy&#x5355;&#x5C42;&#x6DF1;&#x590D;&#x5236; (one-level-deep copy)"></a>copy&#x5355;&#x5C42;&#x6DF1;&#x590D;&#x5236; (one-level-deep copy)</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">niuxianbin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
