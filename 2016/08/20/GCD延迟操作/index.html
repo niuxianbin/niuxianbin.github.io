@@ -81,15 +81,17 @@
 
 <meta name="description" content="延时执行最近996，两个新项目加码，博客越来越慢了。记录下自己项目的注意点。言归正传。一般延迟执行最常用的：  performSelector:withObject:afterDelay NSTimer dispatch_after三者的有何不同和相同点呢？performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子线程">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GCD延迟操作">
+<meta property="og:title" content="iOS延迟执行">
 <meta property="og:url" content="http://yoursite.com/2016/08/20/GCD延迟操作/index.html">
 <meta property="og:site_name" content="niuxianbin的技术博客">
 <meta property="og:description" content="延时执行最近996，两个新项目加码，博客越来越慢了。记录下自己项目的注意点。言归正传。一般延迟执行最常用的：  performSelector:withObject:afterDelay NSTimer dispatch_after三者的有何不同和相同点呢？performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子线程">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-26T13:32:02.794Z">
+<meta property="og:image" content="http://yoursite.com/img/6.png">
+<meta property="og:updated_time" content="2017-12-27T13:25:17.588Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="GCD延迟操作">
+<meta name="twitter:title" content="iOS延迟执行">
 <meta name="twitter:description" content="延时执行最近996，两个新项目加码，博客越来越慢了。记录下自己项目的注意点。言归正传。一般延迟执行最常用的：  performSelector:withObject:afterDelay NSTimer dispatch_after三者的有何不同和相同点呢？performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子线程">
+<meta name="twitter:image" content="http://yoursite.com/img/6.png">
 
 
 
@@ -125,7 +127,7 @@
 
 
 
-  <title>GCD延迟操作 | niuxianbin的技术博客</title>
+  <title>iOS延迟执行 | niuxianbin的技术博客</title>
   
 
 
@@ -249,7 +251,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">GCD延迟操作</h1>
+          <h1 class="post-title" itemprop="name headline">iOS延迟执行</h1>
         
 
         <div class="post-meta">
@@ -303,14 +305,22 @@
 <ul>
 <li>performSelector:withObject:afterDelay</li>
 <li>NSTimer</li>
-<li>dispatch_after<br>三者的有何不同和相同点呢？<br>performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子线程使用需要开启runloop。官网解释<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">This method sets up a timer to perform the aSelector message on the current thread’s run loop. The timer is configured to run in the default mode (NSDefaultRunLoopMode). When the timer fires, the thread attempts to dequeue the message from the run loop and perform the selector. It succeeds if the run loop is running and in the default mode; otherwise, the timer waits until the run loop is in the default mode.</span><br></pre></td></tr></table></figure>
-</li>
+<li>dispatch_after<br>三者的有何不同和相同点呢？<br>performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子线程使用需要开启runloop。官网解释</li>
 </ul>
+<blockquote>
+<p>This method sets up a timer to perform the aSelector<br> message on the current thread’s run loop. The timer is configured to run in the default mode<br> (NSDefaultRunLoopMode). When the timer fires, the<br> thread attempts to dequeue the message from the run<br> loop and perform the selector. It succeeds if the<br> run loop is running and in the default mode;<br> otherwise, the timer waits until the run loop is in<br> the default mode.</p>
+</blockquote>
 <p>其实这个是系统底层创建一个timer，说到底这个是可以NStimer实现的延时方法，<br>这个延时可以取消，系统提供两个可以取消操作的方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">+ (void)cancelPreviousPerformRequestsWithTarget:(id)aTarget selector:(SEL)aSelector object:(nullable id)anArgument;</span><br><span class="line">+ (void)cancelPreviousPerformRequestsWithTarget:(id)aTarget;</span><br></pre></td></tr></table></figure></p>
 <p>NStimer也是基于runloop，使用需要加入runloop，因此也存在子线程使用可能出现问题（timer的也可能产生循环引用问题也要注意）<br>以上两个的好处就是都能取消，</p>
 <h2 id="dispatch-after"><a href="#dispatch-after" class="headerlink" title="dispatch_after"></a>dispatch_after</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//使用方式</span><br><span class="line"> dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_queue_create(0, 0), ^&#123;</span><br><span class="line">        NSLog(@&quot;...dispatch_after...&quot;);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
-<p>官网解释<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">This function waits until the specified time and then asynchronously adds block to the specified queue.</span><br></pre></td></tr></table></figure></p>
-<p>意思就是这个是延迟提交，就是延时后把block提交到队形的线程，而不是提交到对应的线程延迟执行</p>
+<p>官网解释</p>
+<blockquote>
+<p>This function waits until the specified time and then<br>asynchronously adds block to the specified queue.</p>
+</blockquote>
+<p>意思就是这个是延迟提交，就是延时后把block提交到加入队列的的线程，而不是提交到对应的线程延迟执行，因此这个无法取消操作。</p>
+<h2 id="延迟操作取消"><a href="#延迟操作取消" class="headerlink" title="延迟操作取消"></a>延迟操作取消</h2><p>[[NSRunLoop currentRunLoop] run]; ：开始运行循环<br>开启循环之前，必须有定时源或者输入源给他，不然runloop运行完会退出。<br>performSelector:withObject:afterDelay 这个方法底层创建的timer，NStimer也是timer，但是需要手动加入运行循环，通过打runloop有何不同,来观察cancle操作怎么实现原理，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">dispatch_async(dispatch_get_global_queue(0, 0), ^&#123;</span><br><span class="line">        [[NSRunLoop currentRunLoop ] run];</span><br><span class="line">        NSLog(@&quot;0:%@&quot;,[NSRunLoop currentRunLoop]);</span><br><span class="line">        [self performSelector:@selector(test) withObject:nil afterDelay:2.0];</span><br><span class="line">        NSLog(@&quot;1:%@&quot;,[NSRunLoop currentRunLoop]);</span><br><span class="line">        [self performSelector:@selector(test) withObject:nil afterDelay:4.0];</span><br><span class="line">        NSLog(@&quot;2:%@&quot;,[NSRunLoop currentRunLoop]);</span><br><span class="line">        [self performSelector:@selector(test) withObject:nil afterDelay:4.0];</span><br><span class="line">        NSLog(@&quot;3:%@&quot;,[NSRunLoop currentRunLoop]);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>因为有很多属性，截图不方便，我就手动复制了log日志：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0 :timers = (null),</span><br><span class="line">1 :timers = &lt;CFArray 0x6040000af180 [0x1053dcbb0]&gt;&#123;type = mutable-small, count = 1, values = (...</span><br><span class="line">2 :timers = &lt;CFArray 0x6040000af180 [0x1053dcbb0]&gt;&#123;type = mutable-small, count = 2, values = (...</span><br><span class="line">3 :timers = &lt;CFArray 0x6040000af180 [0x1053dcbb0]&gt;&#123;type = mutable-small, count = 3, values = (...</span><br></pre></td></tr></table></figure></p>
+<p>以上原理：timer是放到runloop的 timers数组中了，在runloop run的时候Observer执行timers的timer。<br>取消的方式就是在runloop run之前把timer取消了:<br><img src="/img/6.png" alt=""><br>开发者文档对cancle的解释：就是取消的是下一次的 next run loop cycle 的timer，以下代码的test方法执行次数结果就清晰明了了：3次和一次<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">dispatch_async(dispatch_get_global_queue(0, 0), ^&#123;</span><br><span class="line">        </span><br><span class="line">        for (int i=0; i&lt;3 ; i++) &#123;</span><br><span class="line">            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(test) object:nil];</span><br><span class="line">            [self performSelector:@selector(test) withObject:nil afterDelay:1];</span><br><span class="line">              [[NSRunLoop currentRunLoop] run];</span><br><span class="line">        &#125;</span><br><span class="line">      </span><br><span class="line">    &#125;);</span><br><span class="line">    dispatch_async(dispatch_get_global_queue(0, 0), ^&#123;</span><br><span class="line">        </span><br><span class="line">        for (int i=0; i&lt;3 ; i++) &#123;</span><br><span class="line">            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(test) object:nil];</span><br><span class="line">            [self performSelector:@selector(test) withObject:nil afterDelay:1];</span><br><span class="line">        &#125;</span><br><span class="line">        [[NSRunLoop currentRunLoop] run];</span><br><span class="line">        </span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -465,7 +475,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#延时执行"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x5EF6;&#x65F6;&#x6267;&#x884C;" class="headerlink" title="&#x5EF6;&#x65F6;&#x6267;&#x884C;"></a>&#x5EF6;&#x65F6;&#x6267;&#x884C;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch-after"><span class="nav-number">2.</span> <span class="nav-text"><a href="#dispatch-after" class="headerlink" title="dispatch_after"></a>dispatch_after</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#延时执行"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x5EF6;&#x65F6;&#x6267;&#x884C;" class="headerlink" title="&#x5EF6;&#x65F6;&#x6267;&#x884C;"></a>&#x5EF6;&#x65F6;&#x6267;&#x884C;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch-after"><span class="nav-number">2.</span> <span class="nav-text"><a href="#dispatch-after" class="headerlink" title="dispatch_after"></a>dispatch_after</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#延迟操作取消"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x5EF6;&#x8FDF;&#x64CD;&#x4F5C;&#x53D6;&#x6D88;" class="headerlink" title="&#x5EF6;&#x8FDF;&#x64CD;&#x4F5C;&#x53D6;&#x6D88;"></a>&#x5EF6;&#x8FDF;&#x64CD;&#x4F5C;&#x53D6;&#x6D88;</span></a></li></ol></div>
             
 
           </div>
