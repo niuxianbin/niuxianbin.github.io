@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="python的题外话啊题外话，这个需求来自于老婆大人🙍 ，本来也就想学习python，刚好有了动力😂.项目APP瘦身刚好能用到python python环境 Mac自带的python环境，省了安装过程，在终端输入python即可查看。 推荐比较好用的集成开发环境：PyCharm  语法基础 python的基本数据类型：  Numbers（数字） String（字符串） List（列表） Tup">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python处理Excel文件">
+<meta property="og:url" content="http://yoursite.com/2017/01/03/python读取Excel文件/index.html">
+<meta property="og:site_name" content="niuxianbin的技术博客">
+<meta property="og:description" content="python的题外话啊题外话，这个需求来自于老婆大人🙍 ，本来也就想学习python，刚好有了动力😂.项目APP瘦身刚好能用到python python环境 Mac自带的python环境，省了安装过程，在终端输入python即可查看。 推荐比较好用的集成开发环境：PyCharm  语法基础 python的基本数据类型：  Numbers（数字） String（字符串） List（列表） Tup">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-06T03:49:10.749Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python处理Excel文件">
+<meta name="twitter:description" content="python的题外话啊题外话，这个需求来自于老婆大人🙍 ，本来也就想学习python，刚好有了动力😂.项目APP瘦身刚好能用到python python环境 Mac自带的python环境，省了安装过程，在终端输入python即可查看。 推荐比较好用的集成开发环境：PyCharm  语法基础 python的基本数据类型：  Numbers（数字） String（字符串） List（列表） Tup">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/01/03/python读取Excel文件/"/>
+
+
+
+
+
+  <title>python处理Excel文件 | niuxianbin的技术博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">niuxianbin的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学海无涯</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/03/python读取Excel文件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="niuxianbin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/upload/15234019.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="niuxianbin的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">python处理Excel文件</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-03T21:43:23+08:00">
+                2017-01-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="python的题外话啊"><a href="#python的题外话啊" class="headerlink" title="python的题外话啊"></a>python的题外话啊</h4><p>题外话，这个需求来自于老婆大人🙍 ，本来也就想学习python，刚好有了动力😂.项目APP瘦身刚好能用到python</p>
+<h4 id="python环境"><a href="#python环境" class="headerlink" title="python环境"></a>python环境</h4><p> Mac自带的python环境，省了安装过程，在终端输入python即可查看。<br> 推荐比较好用的集成开发环境：<a href="https://www.jetbrains.com/pycharm/download/" target="_blank" rel="noopener">PyCharm</a> </p>
+<h4 id="语法基础"><a href="#语法基础" class="headerlink" title="语法基础"></a>语法基础</h4><p> python的基本数据类型：</p>
+<ul>
+<li>Numbers（数字）</li>
+<li>String（字符串）</li>
+<li>List（列表）</li>
+<li>Tuple（元组）</li>
+<li>Dictionary（字典）<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">textNum = 100</span><br><span class="line"></span><br><span class="line">testStr = &quot;hahaha&quot;</span><br><span class="line"></span><br><span class="line">testList = [1,2,&quot;hehe&quot;]</span><br><span class="line"></span><br><span class="line">testTuple = (1,&quot;3&quot;,&quot;&quot;)</span><br><span class="line"></span><br><span class="line">testDic = &#123;&quot;niu&quot;:123,&quot;ha&quot;:&quot;hehe&quot;&#125;</span><br><span class="line"></span><br><span class="line">print  textNum,testStr,testList,testTuple,testDic</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>类型和swift里的基本一致，方便使用的是不用声明类型</p>
+<h3 id="流程控制语句"><a href="#流程控制语句" class="headerlink" title="流程控制语句"></a>流程控制语句</h3><p>python 的代码块不使用大括号 {} 来控制类，函数以及其他逻辑判断。python 最具特色的就是用缩进来写模块。 如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># 定义函数</span><br><span class="line">def printme( str ):</span><br><span class="line">   &quot;打印任何传入的字符串&quot;</span><br><span class="line">   print str;</span><br><span class="line">   return;</span><br><span class="line"></span><br><span class="line">print  printme(123)</span><br><span class="line"></span><br><span class="line">#流程控制语句</span><br><span class="line">if True:</span><br><span class="line">    print &quot;True&quot;</span><br><span class="line">else:</span><br><span class="line">    print &quot;false&quot;</span><br><span class="line"></span><br><span class="line">while (False):</span><br><span class="line">    print &quot;haha&quot;</span><br><span class="line"></span><br><span class="line">for obj in [&quot;niu&quot;,&quot;xian&quot;,&quot;bin&quot;]:</span><br><span class="line">    print obj</span><br></pre></td></tr></table></figure></p>
+<h4 id="python-处理文件"><a href="#python-处理文件" class="headerlink" title="python 处理文件"></a>python 处理文件</h4><p>python基础很容易，现在开始实战了。读取和写入需要依赖三个第三方库：<a href="https://pypi.python.org/pypi/xlwt" target="_blank" rel="noopener">xlwt</a> ，<a href="https://pypi.python.org/pypi/xlrd" target="_blank" rel="noopener">xlrd</a> , xlutils，安装过程也很简单，网上很多。<br>媳妇的具体需求是两个sheet表，把早退人员的原因根据第二表打卡时间分析出来<br>具体代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python</span><br><span class="line"># -*- coding: UTF-8 -*-</span><br><span class="line"></span><br><span class="line">import xlrd</span><br><span class="line">import xlwt</span><br><span class="line">from xlutils.copy import copy</span><br><span class="line">import datetime</span><br><span class="line">#乱码问题解决</span><br><span class="line">import sys</span><br><span class="line">reload(sys)</span><br><span class="line">sys.setdefaultencoding(&apos;utf-8&apos;)</span><br><span class="line"></span><br><span class="line">fname = &quot;123.xlsx&quot;</span><br><span class="line">bk = xlrd.open_workbook(fname)</span><br><span class="line">#copy一份用来写入数据</span><br><span class="line">newb = copy(bk)</span><br><span class="line">shxrange = range(bk.nsheets)</span><br><span class="line">try:</span><br><span class="line">    Sheet1 = bk.sheet_by_name(&quot;Sheet1&quot;)</span><br><span class="line">    Sheet2 = bk.sheet_by_name(&quot;Sheet2&quot;)</span><br><span class="line">except:</span><br><span class="line">    print &quot;no sheet in %s named Sheet1&quot; % fname</span><br><span class="line"># 获取行数</span><br><span class="line">nrows = Sheet1.nrows</span><br><span class="line"># 获取列数</span><br><span class="line">ncols = Sheet1.ncols</span><br><span class="line">print &quot;sheet1:nrows %d, ncols %d&quot; % (nrows, ncols)</span><br><span class="line"></span><br><span class="line"># 获取行数</span><br><span class="line">nrows2 = Sheet2.nrows</span><br><span class="line"># 获取列数</span><br><span class="line">ncols2 = Sheet2.ncols</span><br><span class="line">print &quot;sheet2:nrows %d, ncols %d&quot; % (nrows2, ncols2)</span><br><span class="line"></span><br><span class="line">#-------sheet1----------</span><br><span class="line">#人员列表</span><br><span class="line">peopleList = Sheet1.col_values(0)</span><br><span class="line">#早退时间</span><br><span class="line">lltimeList = Sheet1.col_values(4)</span><br><span class="line"># 获取早退的人员列</span><br><span class="line">listValue = Sheet1.col_values(9)</span><br><span class="line">#存储早退人员相关信息</span><br><span class="line">zauotuiList = []</span><br><span class="line"></span><br><span class="line">#-------sheet2----------</span><br><span class="line">people2List = Sheet2.col_values(1)</span><br><span class="line"></span><br><span class="line">lltime2List = Sheet2.col_values(0)</span><br><span class="line"></span><br><span class="line"># 写入早退原因</span><br><span class="line">def excelUpdate(excel,row,content):</span><br><span class="line">    &apos;&apos;&apos;</span><br><span class="line">    更新已有excel, 是copy一份再做更新</span><br><span class="line">    :param excel:</span><br><span class="line">    :return:</span><br><span class="line">    &apos;&apos;&apos;</span><br><span class="line">    wbsheet = newb.get_sheet(0)</span><br><span class="line"></span><br><span class="line">    wbsheet.write(row, 10, content)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    return;</span><br><span class="line"></span><br><span class="line">for index in range(len(listValue)):</span><br><span class="line">     if (&quot;早退&quot; in listValue[index]):</span><br><span class="line">        peoplename = peopleList[index]</span><br><span class="line">        for peopleindex in range(len(people2List)):</span><br><span class="line">            if (peoplename == people2List[peopleindex]):</span><br><span class="line">             #   print  lltime2List[peopleindex][2:(lltime2List[peopleindex].index(&quot; &quot;))],lltimeList[index][0:(lltimeList[index].index(&quot; &quot;))]</span><br><span class="line">                if ((lltime2List[peopleindex][2:(lltime2List[peopleindex].index(&quot; &quot;))] == lltimeList[index][0:(lltimeList[index].index(&quot; &quot;))]) and lltime2List[peopleindex][11:13] &gt;=16 ):</span><br><span class="line">                   # print &quot;早退人员名字：%s 日期：%s 当天直播时间: %s&quot; % (peoplename,lltimeList[index],lltime2List[peopleindex])</span><br><span class="line">                    excelUpdate(newb,index,unicode(&quot;晚上有直播&quot;, &quot;utf8&quot;))</span><br><span class="line">                   # print  lltime2List[peopleindex][11:13]</span><br><span class="line">                # print lltime2List[peopleindex],people2List[peopleindex]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">         # if peopleList[index] ==</span><br><span class="line">         # print &quot;%s %s %s&quot; % (peopleList[index],listValue[index],lltimeList[index][0:(lltimeList[index].index(&quot; &quot;))])</span><br><span class="line">         </span><br><span class="line">#生成新的Excel文件存储磁盘</span><br><span class="line">newb.save(&quot;123456.xlsx&quot;)</span><br></pre></td></tr></table></figure></p>
+<h4 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h4><p>学习新语言基础很简单，但是真正使用还是会遇到各种问题，但是在实践中才能学的更快。🍎🍎后期打算自己写APP瘦身脚本，fighting，感谢数据部大神@司马指点</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/25/GCD线程同步/" rel="next" title="GCD线程同步">
+                <i class="fa fa-chevron-left"></i> GCD线程同步
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/upload/15234019.jpeg"
+                alt="niuxianbin" />
+            
+              <p class="site-author-name" itemprop="name">niuxianbin</p>
+              <p class="site-description motion-element" itemprop="description">孜孜不倦</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#python的题外话啊"><span class="nav-number">1.</span> <span class="nav-text"><a href="#python&#x7684;&#x9898;&#x5916;&#x8BDD;&#x554A;" class="headerlink" title="python&#x7684;&#x9898;&#x5916;&#x8BDD;&#x554A;"></a>python&#x7684;&#x9898;&#x5916;&#x8BDD;&#x554A;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#python环境"><span class="nav-number">2.</span> <span class="nav-text"><a href="#python&#x73AF;&#x5883;" class="headerlink" title="python&#x73AF;&#x5883;"></a>python&#x73AF;&#x5883;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#语法基础"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x8BED;&#x6CD5;&#x57FA;&#x7840;" class="headerlink" title="&#x8BED;&#x6CD5;&#x57FA;&#x7840;"></a>&#x8BED;&#x6CD5;&#x57FA;&#x7840;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流程控制语句"><span class="nav-number"></span> <span class="nav-text"><a href="#&#x6D41;&#x7A0B;&#x63A7;&#x5236;&#x8BED;&#x53E5;" class="headerlink" title="&#x6D41;&#x7A0B;&#x63A7;&#x5236;&#x8BED;&#x53E5;"></a>&#x6D41;&#x7A0B;&#x63A7;&#x5236;&#x8BED;&#x53E5;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#python-处理文件"><span class="nav-number">1.</span> <span class="nav-text"><a href="#python-&#x5904;&#x7406;&#x6587;&#x4EF6;" class="headerlink" title="python &#x5904;&#x7406;&#x6587;&#x4EF6;"></a>python &#x5904;&#x7406;&#x6587;&#x4EF6;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结尾"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x7ED3;&#x5C3E;" class="headerlink" title="&#x7ED3;&#x5C3E;"></a>&#x7ED3;&#x5C3E;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">niuxianbin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
