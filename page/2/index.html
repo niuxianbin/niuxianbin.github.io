@@ -232,6 +232,398 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/01/weakSelf和stronSelf的小秘密/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="niuxianbin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/upload/15234019.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="niuxianbin的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/06/01/weakSelf和stronSelf的小秘密/" itemprop="url">weakSelf和stronSelf的小秘密</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-06-01T23:07:15+08:00">
+                2016-06-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="block循环引用"><a href="#block循环引用" class="headerlink" title="block循环引用"></a>block循环引用</h2><p>开发中，block的使用频率特别高，不小心发生循环引用的概率更高，首先我们会想到的以下就是用weakself解决，最常见的循环引用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-(void)testBlock&#123;</span><br><span class="line"> </span><br><span class="line">    self.block = ^&#123;</span><br><span class="line">        self.testStr = @&quot;test&quot;;</span><br><span class="line">        _testStr = @&quot;test&quot;;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>产生循环引用的原因如下图<br><img src="/img/123.png" alt=""></p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>由于引用产生了循环所以需要打破循环，解决方式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__weak typeof(self) weakSelf = self</span><br></pre></td></tr></table></figure></p>
+<h2 id="不会造成循环引用的block"><a href="#不会造成循环引用的block" class="headerlink" title="不会造成循环引用的block"></a>不会造成循环引用的block</h2><p>一般我们使用GCD或者UIView的动画系统带的block回调，如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">__weak typeof(self) weakSelf = self;</span><br><span class="line">    dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        weakSelf.testStr = @&quot;testblock&quot;;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure></p>
+<p><mark>敲黑板，这个用法时错误的。。。</mark><br>因为此时将block传给dispatch_async时，系统会将其copy到堆上，block会持用block中的用到的对象，dispatch_async不知道self什么时候释放，因此retain一次self，任务执行完再release掉，假如这里用__weak，有可能self已经释放掉，而block还没执行，产生不可预期的问题。</p>
+<h2 id="block执行中对象被释放"><a href="#block执行中对象被释放" class="headerlink" title="block执行中对象被释放"></a>block执行中对象被释放</h2><p>在AFN的源码中，可以看到如下用法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">__weak __typeof(self)weakSelf = self;</span><br><span class="line">   AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status) &#123;</span><br><span class="line">       __strong __typeof(weakSelf)strongSelf = weakSelf;</span><br><span class="line"></span><br><span class="line">       strongSelf.networkReachabilityStatus = status;</span><br><span class="line">       if (strongSelf.networkReachabilityStatusBlock) &#123;</span><br><span class="line">           strongSelf.networkReachabilityStatusBlock(status);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">   &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>block没有强引用对象，这样可能会产生一个问题：当block回调被执行的时候，其弱引用的对象随时都有可能被外部释放！为避免block在执行过程中相关的对象被释放，因此要用了strongSelf～～～～；</p>
+<h2 id="block的本质"><a href="#block的本质" class="headerlink" title="block的本质"></a>block的本质</h2><p>关于block有很多技术大牛的博客，基本总结起来block就是一个里面存储了指向函数体中包含定义block时的代码块的函数指针，以及block外部上下文变量等信息的结构体，可以通过clang -rewrite-objc 我们就可以通过C++的代码东西洞悉其奥妙。</p>
+<p>感谢大神：<br><a href="https://www.jianshu.com/p/51d04b7639f1" target="_blank" rel="noopener">Block技巧与底层解析</a><br><a href="http://blog.devtang.com/2013/07/28/a-look-inside-blocks/" target="_blank" rel="noopener">谈Objective-C block的实现</a><br><a href="http://blog.csdn.net/Lotheve/article/details/51992386" target="_blank" rel="noopener">和block循环引用说再见</a><br><a href="http://www.galloway.me.uk/2012/10/a-look-inside-blocks-episode-1/" target="_blank" rel="noopener">A look inside blocks: Episode 1</a><br><a href="http://blog.csdn.net/friday_holiday/article/details/50522778" target="_blank" rel="noopener">block的循环引用究竟是什么鬼？</a> </p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/13/开发中宏的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="niuxianbin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/upload/15234019.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="niuxianbin的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/13/开发中宏的使用/" itemprop="url">优雅高效开发的宏</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-13T22:46:10+08:00">
+                2016-05-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="宏在开发中的使用"><a href="#宏在开发中的使用" class="headerlink" title="宏在开发中的使用"></a>宏在开发中的使用</h2><p>开发中我们一些有关布局的尺寸，我们通常会用宏定义，最基本的使用如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define SCREEN_WIDTH   [UIScreen mainScreen].bounds.size.width</span><br><span class="line">#define SCREENH_HEIGHT [UIScreen mainScreen].bounds.size.height</span><br></pre></td></tr></table></figure></p>
+<p>在研究MJExtension，SDSDWebImage源码发现宏更有效率的使用方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> SDSDWebImage中关于需要在主线程执行的block；</span><br><span class="line">**/</span><br><span class="line"></span><br><span class="line">#define dispatch_main_async_safe(block)\</span><br><span class="line">if ([NSThread isMainThread]) &#123;\</span><br><span class="line">	block();\</span><br><span class="line">&#125; else &#123;\</span><br><span class="line">	dispatch_async(dispatch_get_main_queue(), block);\</span><br><span class="line">&#125;</span><br><span class="line">/**</span><br><span class="line"> MJ归档的实现</span><br><span class="line">**/</span><br><span class="line">#define MJCodingImplementation \</span><br><span class="line">- (id)initWithCoder:(NSCoder *)decoder \</span><br><span class="line">&#123; \</span><br><span class="line">if (self = [super init]) &#123; \</span><br><span class="line">[self mj_decode:decoder]; \</span><br><span class="line">&#125; \</span><br><span class="line">return self; \</span><br><span class="line">&#125; \</span><br><span class="line">\</span><br><span class="line">- (void)encodeWithCoder:(NSCoder *)encoder \</span><br><span class="line">&#123; \</span><br><span class="line">[self mj_encode:encoder]; \</span><br><span class="line">&#125;</span><br><span class="line">#define MJExtensionCodingImplementation MJCodingImplementation</span><br></pre></td></tr></table></figure></p>
+<p>由以上我们可以联想到进行代码中冗余代码的抽取，格式统一，出现频次较高的代码：</p>
+<ul>
+<li>settet/getter</li>
+<li>lazy load </li>
+<li>初始化方法<br>其中懒加载的代码如下：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#define lazy_load(_type_, _name_) \</span><br><span class="line">- (_type_ *)_name_; \</span><br><span class="line">&#123; \</span><br><span class="line">    if (!_##_name_) &#123; \</span><br><span class="line">        _##_name_ = [_type_ new]; \</span><br><span class="line">    &#125; \</span><br><span class="line">return _##_name_; \</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>以上宏中的：##两个代表前后字符是拼接的，#代表替换</p>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>宏属于预编译指令，只是简单的替换，并没有语法检查，所以写的时候务必认真，不然别人使用相当痛苦，感谢以下大神：</p>
+<p><a href="https://wangdetong.github.io/2016/10/05/20161005%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96%E4%B9%8B%E5%AE%8F%E5%AE%9A%E4%B9%89-macros/" target="_blank" rel="noopener">代码优化之宏定义 - macros</a><br><a href="http://www.jianshu.com/p/213b3b96cafe" target="_blank" rel="noopener">iOS 日常工作之常用宏定义大全</a> </p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/03/iOS的NSNotification/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="niuxianbin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/upload/15234019.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="niuxianbin的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/03/iOS的NSNotification/" itemprop="url">iOS的NSNotification</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-03T10:04:41+08:00">
+                2016-05-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="iOS的NSNotificationCenter"><a href="#iOS的NSNotificationCenter" class="headerlink" title="iOS的NSNotificationCenter"></a>iOS的NSNotificationCenter</h2><p>页面间传值的常见三种方式：代理、通知、block。通知也就是广播模式，可以是实现多对一的监听。</p>
+<h2 id="通知是同步？异步？"><a href="#通知是同步？异步？" class="headerlink" title="通知是同步？异步？"></a>通知是同步？异步？</h2><p>同步的同步和异步都是相对于发送通知的线程而言，同步会阻塞当前线程，异步则先执行监听方法。                                     通知是同步的，当然可以实现异步监听：通过通知队列（Notification Queues）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notification) name:@&quot;name&quot; object:nil];</span><br><span class="line">    NSLog(@&quot;start&quot;);</span><br><span class="line">    [[NSNotificationCenter defaultCenter] postNotificationName:@&quot;name&quot; object:nil];</span><br><span class="line">    NSLog(@&quot;post&quot;);</span><br><span class="line">&#125;</span><br><span class="line">-(void)notification&#123;</span><br><span class="line">    [NSThread sleepForTimeInterval:10];</span><br><span class="line">    NSLog(@&quot;notification&quot;);</span><br><span class="line">&#125;</span><br><span class="line">//打印的结果为：start，notification，post；</span><br></pre></td></tr></table></figure></p>
+<p>结果如图<br><img src="/img/1.png" alt=""><br>会发现主线程阻塞了10S，此处就应该想到通知对接的用途，把要发送通知加入通知队列，如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">NSLog(@&quot;start&quot;);</span><br><span class="line">    NSNotification *notification = [NSNotification notificationWithName:@&quot;name&quot;</span><br><span class="line">                                                                 object:nil];</span><br><span class="line">    [[NSNotificationQueue defaultQueue] enqueueNotification:notification</span><br><span class="line">                                               postingStyle:NSPostASAP];</span><br><span class="line">    NSLog(@&quot;post&quot;);</span><br><span class="line">    打印结果：：start，post，notification；</span><br></pre></td></tr></table></figure></p>
+<h2 id="监听的线程安全问题"><a href="#监听的线程安全问题" class="headerlink" title="监听的线程安全问题"></a>监听的线程安全问题</h2><p>通知监听方法会处理很多不同的逻辑，但是无法判断通知到底是在哪个线程发送的，所以此处我们刷新UI的操作时，需要先判断，在官方文档中；通知和线程的解释：</p>
+<blockquote>
+<p>Regular notification centers deliver notifications on the thread in which the notification was posted.<br>Distributed notification centers deliver notifications on the main thread.<br>At times, you may require notifications to be delivered on a particular thread that is determined by you instead of the notification center.<br> For example, if an object running in a background thread is listening for notifications from the user interface, such as a window closing, you would like to receive the notifications in the background thread instead of the main thread. In these cases, you must capture the notifications as they are delivered on the default thread and redirect them to the appropriate thread.</p>
+</blockquote>
+<p>大致的意思就是监听方法是和发送通知是在同一线程中，在监听方法中如果有刷新UI的操作，必须先判断线程。<br>NSNotificationCenter是线程安全的，在多线程可以放心使用。无需加锁考。</p>
+<h2 id="通知的移除"><a href="#通知的移除" class="headerlink" title="通知的移除"></a>通知的移除</h2><p>在iOS8之前，我们必须手动移出，不然在监听对象释放后，会产生野指针导致crash，但是iOS9以后不手动移出也没问题了，原因是iOS通知中心对observer引用的修饰词变化了</p>
+<ul>
+<li>iOS 8及其之前用unsafe_unretained</li>
+<li>iOS 9以后用了weak</li>
+</ul>
+<p>所以即使手动不移除，也不会有问题。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/01/迁移/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -393,7 +785,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
