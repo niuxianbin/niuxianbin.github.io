@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="孜孜不倦">
+<meta name="description" content="为避免多个线程同时读写一个数据产生不可预期的后果，需要对多个线程访问同一个数据访问同步（Synchronization）,同步最常见的方法是使用锁（Lock）,这样就能保证数据的访问原子化了。 锁机制原理 原理参考：《程序员的自我修养》  Semaphone(信号量)：多个线程访问通过信号量的加1减1来控制线程同步，信号量在系统中可以被任意线程获取并释放。 Mutex（互斥量）：互斥量和信号量">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS开发中的锁">
 <meta property="og:url" content="http://yoursite.com/2017/07/21/iOS开发中的锁/index.html">
 <meta property="og:site_name" content="niuxianbin的技术博客">
-<meta property="og:description" content="孜孜不倦">
+<meta property="og:description" content="为避免多个线程同时读写一个数据产生不可预期的后果，需要对多个线程访问同一个数据访问同步（Synchronization）,同步最常见的方法是使用锁（Lock）,这样就能保证数据的访问原子化了。 锁机制原理 原理参考：《程序员的自我修养》  Semaphone(信号量)：多个线程访问通过信号量的加1减1来控制线程同步，信号量在系统中可以被任意线程获取并释放。 Mutex（互斥量）：互斥量和信号量">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-02T14:21:26.713Z">
+<meta property="og:updated_time" content="2018-04-02T15:11:55.967Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发中的锁">
-<meta name="twitter:description" content="孜孜不倦">
+<meta name="twitter:description" content="为避免多个线程同时读写一个数据产生不可预期的后果，需要对多个线程访问同一个数据访问同步（Synchronization）,同步最常见的方法是使用锁（Lock）,这样就能保证数据的访问原子化了。 锁机制原理 原理参考：《程序员的自我修养》  Semaphone(信号量)：多个线程访问通过信号量的加1减1来控制线程同步，信号量在系统中可以被任意线程获取并释放。 Mutex（互斥量）：互斥量和信号量">
 
 
 
@@ -299,7 +299,16 @@
       
 
       
-        
+        <p>  为避免多个线程同时读写一个数据产生不可预期的后果，需要对多个线程访问同一个数据访问同步（Synchronization）,同步最常见的方法是使用锁（Lock）,这样就能保证数据的访问原子化了。</p>
+<h2 id="锁机制原理"><a href="#锁机制原理" class="headerlink" title="锁机制原理"></a>锁机制原理</h2><p> 原理参考：《程序员的自我修养》</p>
+<ul>
+<li>Semaphone(信号量)：多个线程访问通过信号量的加1减1来控制线程同步，信号量在系统中可以被任意线程获取并释放。</li>
+<li>Mutex（互斥量）：互斥量和信号量相似，资源仅允许一个线程访问，互斥量可以被任意线程捕获，但和信号量不同的是：互斥量要求那个线程捕获，则必须由其释放。</li>
+<li>临界区（Critical Section）：它是比互斥量更严格的同步手段，于互斥量最大的区别：临界区的作用范围仅限于本进程。</li>
+<li>Condition Variable（条件变量）：</li>
+<li>Read/Write lock（读写锁）：</li>
+</ul>
+
       
     </div>
     
@@ -385,8 +394,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -434,6 +452,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#锁机制原理"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x9501;&#x673A;&#x5236;&#x539F;&#x7406;" class="headerlink" title="&#x9501;&#x673A;&#x5236;&#x539F;&#x7406;"></a>&#x9501;&#x673A;&#x5236;&#x539F;&#x7406;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
