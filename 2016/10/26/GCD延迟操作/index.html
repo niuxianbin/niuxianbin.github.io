@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="延时执行最近996，两个新项目加码，博客越来越慢了。记录下自己项目的注意点。言归正传。一般延迟执行最常用的：  performSelector:withObject:afterDelay NSTimer dispatch_after三者的有何不同和相同点呢？performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子线程">
+<meta name="description" content="延时执行最近996，两个新项目加码，博客越来越慢了。记录下自己项目的注意点。言归正传。一般延迟执行最常用的：  performSelector:withObject:afterDelay NSTimer dispatch_after  三者的有何不同和相同点呢?performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS延迟执行">
 <meta property="og:url" content="http://yoursite.com/2016/10/26/GCD延迟操作/index.html">
 <meta property="og:site_name" content="niuxianbin的技术博客">
-<meta property="og:description" content="延时执行最近996，两个新项目加码，博客越来越慢了。记录下自己项目的注意点。言归正传。一般延迟执行最常用的：  performSelector:withObject:afterDelay NSTimer dispatch_after三者的有何不同和相同点呢？performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子线程">
+<meta property="og:description" content="延时执行最近996，两个新项目加码，博客越来越慢了。记录下自己项目的注意点。言归正传。一般延迟执行最常用的：  performSelector:withObject:afterDelay NSTimer dispatch_after  三者的有何不同和相同点呢?performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/6.png">
-<meta property="og:updated_time" content="2017-12-27T14:48:05.531Z">
+<meta property="og:updated_time" content="2018-04-16T14:17:11.155Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS延迟执行">
-<meta name="twitter:description" content="延时执行最近996，两个新项目加码，博客越来越慢了。记录下自己项目的注意点。言归正传。一般延迟执行最常用的：  performSelector:withObject:afterDelay NSTimer dispatch_after三者的有何不同和相同点呢？performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子线程">
+<meta name="twitter:description" content="延时执行最近996，两个新项目加码，博客越来越慢了。记录下自己项目的注意点。言归正传。一般延迟执行最常用的：  performSelector:withObject:afterDelay NSTimer dispatch_after  三者的有何不同和相同点呢?performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子">
 <meta name="twitter:image" content="http://yoursite.com/img/6.png">
 
 
@@ -305,8 +305,9 @@
 <ul>
 <li>performSelector:withObject:afterDelay</li>
 <li>NSTimer</li>
-<li>dispatch_after<br>三者的有何不同和相同点呢？<br>performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子线程使用需要开启runloop。官网解释</li>
+<li>dispatch_after</li>
 </ul>
+<p>三者的有何不同和相同点呢?performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子线程使用需要开启runloop。官网解释</p>
 <blockquote>
 <p>This method sets up a timer to perform the aSelector message on the current thread’s run loop. The timer is configured to run in the default mode (NSDefaultRunLoopMode). When the timer fires, the thread attempts to dequeue the message from the run loop and perform the selector. It succeeds if the run loop is running and in the default mode; otherwise, the timer waits until the run loop is in the default mode</p>
 </blockquote>

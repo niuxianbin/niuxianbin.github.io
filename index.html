@@ -423,14 +423,23 @@
         
           
             <p>  为避免多个线程同时读写一个数据产生不可预期的后果，需要对多个线程访问同一个数据访问同步（Synchronization）,同步最常见的方法是使用锁（Lock）,这样就能保证数据的访问原子化了。</p>
-<h2 id="锁机制原理"><a href="#锁机制原理" class="headerlink" title="锁机制原理"></a>锁机制原理</h2><p> 原理参考：《程序员的自我修养》</p>
+<h2 id="锁机制原理"><a href="#锁机制原理" class="headerlink" title="锁机制原理"></a>锁机制原理</h2><p>以下原理参考书籍：《程序员的自我修养》</p>
 <ul>
 <li>Semaphone(信号量)：多个线程访问通过信号量的加1减1来控制线程同步，信号量在系统中可以被任意线程获取并释放。</li>
 <li>Mutex（互斥量）：互斥量和信号量相似，资源仅允许一个线程访问，互斥量可以被任意线程捕获，但和信号量不同的是：互斥量要求那个线程捕获，则必须由其释放。</li>
-<li>临界区（Critical Section）：它是比互斥量更严格的同步手段，于互斥量最大的区别：临界区的作用范围仅限于本进程。</li>
-<li>Condition Variable（条件变量）：</li>
-<li>Read/Write lock（读写锁）：</li>
+<li>Critical Section（临界区）：它是比互斥量更严格的同步手段，于互斥量最大的区别：临界区的作用范围仅限于本进程。</li>
+<li>Condition Variable（条件变量）：作用类似栅栏，条件变量可以让多个线程一起等待某个事件发生，然后多个线程一起恢复执行</li>
+<li>Read/Write lock（读写锁）：特定场合的同步方式，读写锁的两种获取方式：共享的（Shared）/独占的（Exclusive）,当锁处于自由状态，任何一种方式都能获取锁成功，并将锁置于对应的状态，如果处于共享的（Shared）状态，其他线程能以共享的方式获取锁仍然会成功，此时锁分配给了多个线程，然而其他线程以独占的方式获取共享状态（Shared）锁，它必须等待锁被持用的所有线程释放了，相应的，处于独占的（Exclusive）状态的锁将阻止所有线程获取该锁。<br>以上几种类型在也在iOS的pthread.h头文件有对应的lock类型<h2 id="pthread-mutex-t：互斥锁"><a href="#pthread-mutex-t：互斥锁" class="headerlink" title="pthread_mutex_t：互斥锁"></a>pthread_mutex_t：互斥锁</h2>POSIX threads(简称Pthreads)是在多核平台上进行并行编程的一套常用的API，pthread来自于此，Mutex属于sleep-waiting类型的锁，<br>相关代码：<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PTHREAD_MUTEX_INITIALIZER <span class="comment">//初始化的宏</span></span><br><span class="line"><span class="keyword">int</span> pthread_mutex_init(pthread_mutex_t *mp,<span class="keyword">const</span> pthread_mutexattr_t *mattr);</span><br><span class="line"><span class="keyword">int</span> pthread_mutex_lock(pthread_mutex_t *mutex);</span><br><span class="line"><span class="keyword">int</span> pthread_mutex_unlock(pthread_mutex_t *mutex);</span><br><span class="line"><span class="comment">// trylock:非阻塞的锁定互斥锁，函数成功返回0。任何其他返回值都表示错误。</span></span><br><span class="line"><span class="keyword">int</span> pthread_mutex_trylock(pthread_mutex_t *mutex);</span><br><span class="line"><span class="keyword">int</span> pthread_mutex_destroy(pthread_mutex_t *mutex);</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
+<p>锁类型：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Mutex type attributes</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#define PTHREAD_MUTEX_NORMAL		0</span></span><br><span class="line"><span class="meta">#define PTHREAD_MUTEX_ERRORCHECK	1</span></span><br><span class="line"><span class="meta">#define PTHREAD_MUTEX_RECURSIVE		2</span></span><br><span class="line"><span class="meta">#define PTHREAD_MUTEX_DEFAULT		PTHREAD_MUTEX_NORMAL</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="pthread-spinlock-t：自旋锁"><a href="#pthread-spinlock-t：自旋锁" class="headerlink" title="pthread_spinlock_t：自旋锁"></a>pthread_spinlock_t：自旋锁</h2><p>相关代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pthread_spin_lock (pthread_spinlock_t *lock);</span><br><span class="line">pthread_spin_trylock (pthread_spinlock_t *lock);</span><br><span class="line">pthread_spin_unlock (pthread_spinlock_t *lock);</span><br></pre></td></tr></table></figure></p>
+<p>pthread_spinlock_t也称自旋锁，和mutex不同。它属于busy-waiting类型的锁。然而Mac OS中是不支持pthread_spinlock_t的，只是Linux OS 中支持它。</p>
+<h2 id="自旋锁互斥锁的迥异"><a href="#自旋锁互斥锁的迥异" class="headerlink" title="自旋锁互斥锁的迥异"></a>自旋锁互斥锁的迥异</h2><h4 id="操作系统基础知识"><a href="#操作系统基础知识" class="headerlink" title="操作系统基础知识"></a>操作系统基础知识</h4><p>线程调度（Thread Schedule） ：操作系统的线程调度,通常采用时间片（Time  Slice）算法，每个线程都会拥有一段可执行的时间，通常在 10-100 毫秒左右。当线程用完属于自己的时间片以后或者在时间片用尽之前在等待某事件，就会被操作系统挂起，放入等待队列中，直到下一次被分配时间片。现在一般都是优先级调度（Priority Schedule）和时间片混用。<br>原子操作：狭义上的原子操作表示一条不可打断的操作，也就是说线程在执行操作过程中，不会被操作系统挂起，而是一定会执行完。在多处理器的情况下，能够被多个处理器同时执行的操作任然算不上原子操作。因此，真正的原子操作必须由硬件提供支持，比如 x86 平台上如果在指令前面加上 “LOCK” 前缀，对应的机器码在执行时会把总线锁住，使得其他 CPU不能再执行相同操作，从而从硬件层面确保了操作的原子性。dispatch_once内部也是用原子操作。</p>
+<h3 id="busy-waiting-amp-sleeping"><a href="#busy-waiting-amp-sleeping" class="headerlink" title="busy-waiting &amp; sleeping"></a>busy-waiting &amp; sleeping</h3><p>两种锁从原理上讲：<br>互斥锁：属于sleep-waiting类型的锁<br>自旋锁：属于busy-waiting类型的锁<br>🌰：例如在一个双核的机器上有两个线程(线程A和线程B)，它们分别运行在Core0和Core1上。<br>如果线程A想要通过pthread_mutex_lock操作去得到一个临界区的锁，而此时这个锁正被线程B所持有，那么线程A就会被阻塞(blocking)，让出自己的时间片，Core0 会在此时进行上下文切换(Context Switch)将线程A置于等待队列中，此时Core0就可以运行其他的任务(例如另一个线程C)而不必进行忙等待。<br>如果线程A是使用pthread_spin_lock操作去请求锁，那么线程A就会一直在 Core0上进行忙等待并不停的进行锁请求，直到得到这个锁为止(直到用完CPU分配的时间片而被系统挂起)。</p>
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p>（1）Mutex适合对锁操作非常频繁的场景，并且具有更好的适应性。尽管相比spin lock它会花费更多的开销（主要是上下文切换），但是它能适合实际开发中复杂的应用场景，在保证一定性能的前提下提供更大的灵活度。</p>
+<p>（2）spin lock的lock/unlock性能更好(花费更少的cpu指令)，但是它只适应用于临界区运行时间很短的场景。而在实际软件开发中，除非程序员对自己的程序的锁操作行为非常的了解，否则使用spin lock不是一个好主意(通常一个多线程程序中对锁的操作有数以万次，如果失败的锁操作(contended lock requests)过多的话就会浪费很多的时间进行空等待)。</p>
+<p>（3）更保险（保守）的方法或许是先使用 Mutex，然后如果对性能还有进一步的需求，可以尝试使用spin lock进行调优</p>
 
           
         
@@ -1329,8 +1338,9 @@
 <ul>
 <li>performSelector:withObject:afterDelay</li>
 <li>NSTimer</li>
-<li>dispatch_after<br>三者的有何不同和相同点呢？<br>performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子线程使用需要开启runloop。官网解释</li>
+<li>dispatch_after</li>
 </ul>
+<p>三者的有何不同和相同点呢?performSelector:withObject:afterDelay 是基于runloop实现的，所以这个使用应该注意，!!!!在子线程使用需要开启runloop。官网解释</p>
 <blockquote>
 <p>This method sets up a timer to perform the aSelector message on the current thread’s run loop. The timer is configured to run in the default mode (NSDefaultRunLoopMode). When the timer fires, the thread attempts to dequeue the message from the run loop and perform the selector. It succeeds if the run loop is running and in the default mode; otherwise, the timer waits until the run loop is in the default mode</p>
 </blockquote>
